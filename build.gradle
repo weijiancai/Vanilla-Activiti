@@ -18,6 +18,7 @@ repositories {
 }
 
 dependencies {
+    compile fileTree(dir: 'src/main/webapp/WEB-INF/lib', includes: ["*.jar"])
     // This dependency is found on compile classpath of this component and consumers.
     compile 'com.google.guava:guava:21.0'
 //    compile 'org.springframewor:spring-core:4.1.5.RELEASE'
@@ -26,7 +27,7 @@ dependencies {
     compile 'commons-io:commons-io:2.0.1'
 //    compile 'org.activiti:activiti-engine:5.22.0'
 //    compile 'org.activiti:activiti-spring:5.22.0'
-    compile 'org.activiti:activiti-modeler:5.22.0'
+//    compile 'org.activiti:activiti-modeler:5.22.0' 使用自己的类，挪到了com.ectongs.activiti.editor
     compile ('org.activiti:activiti-explorer:5.22.0') {
         exclude group: 'org.vaadin.addons'
     }
