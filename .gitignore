@@ -21,6 +21,9 @@
 hs_err_pid*
 
 
-#idea
+# idea
 *.iml
 .idea/
+
+# gradle
+gradle/
