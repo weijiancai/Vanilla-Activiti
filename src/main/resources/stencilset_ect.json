@@ -3,7 +3,7 @@
   "namespace" : "http://b3mn.org/stencilset/bpmn2.0#",
   "description" : "BPMN process editor",
   "propertyPackages" : [{
-    "name" : "dspackage",
+    "name" : "dsid",
     "properties" : [ {
       "id" : "dsid",
       "type" : "String",
@@ -11,8 +11,33 @@
       "value" : "",
       "description" : "ds id.",
       "popular" : true
-    } ]
-  }],
+    }]
+  },{
+    "name" : "ectidpackage",
+    "properties" : [ {
+      "id" : "ectid",
+      "type" : "String",
+      "title" : "ectid",
+      "value" : "",
+      "description" : "ect id.",
+      "popular" : true
+    } ]},{
+    "name" : "processtaskobj",
+    "properties" : [ {
+      "id" : "processid",
+      "type" : "String",
+      "title" : "流程ID",
+      "value" : "",
+      "description" : "流程ID.",
+      "popular" : true
+    }, {
+      "id" : "processitemid",
+      "type" : "String",
+      "title" : "流程任务项ID",
+      "value" : "",
+      "description" : "流程任务项ID.",
+      "popular" : true
+    }]}],
   "stencils" : [ {
     "id" : "jlsp",
     "extend" : "UserTask",
@@ -20,7 +45,8 @@
     "description" : "由经理审批请假申请",
     "icon" : "activity/list/type.user.png",
     "groups" : [ "请假" ],
-    "propertyPackages" : [ "dspackage"],
-    "roles" : [ "sequence_start"]
+    "propertyPackages" : ["overrideidpackage", "namepackage", "dsid", "ectidpackage", "processtaskobj"],
+    "roles" : [ "Activity",  "sequence_start", "sequence_end", "ActivitiesMorph" ],
+    "hiddenPropertyPackages" : [ ]
   }]
 }

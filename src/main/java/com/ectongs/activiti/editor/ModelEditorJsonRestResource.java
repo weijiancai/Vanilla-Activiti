@@ -1,6 +1,11 @@
 package com.ectongs.activiti.editor;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
@@ -16,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import java.util.List;
 
 /**
  * @author Tijs Rademakers
@@ -46,8 +53,24 @@ public class ModelEditorJsonRestResource implements ModelDataJsonConstants {
                     modelNode.put(MODEL_NAME, model.getName());
                 }
                 modelNode.put(MODEL_ID, model.getId());
-                ObjectNode editorJsonNode = (ObjectNode) objectMapper.readTree(
-                        new String(repositoryService.getModelEditorSource(model.getId()), "utf-8"));
+                String jsonString = new String(repositoryService.getModelEditorSource(model.getId()), "utf-8");
+                JSONObject jsonObject = JSON.parseObject(jsonString);
+                JSONArray childShapes = jsonObject.getJSONArray("childShapes");
+                if (childShapes != null) {
+                    for(int i= 0; i < childShapes.size(); i++) {
+                        JSONObject shap = childShapes.getJSONObject(i);
+                        JSONObject stencil = shap.getJSONObject("stencil");
+                        if (stencil != null) {
+                            String id = stencil.getString("id");
+                            String ectid = stencil.getString("ectid");
+                            if(ectid != null && ectid.length() > 0) {
+                                stencil.put("id", id + "_" + ectid);
+                            }
+                        }
+                    }
+                }
+                jsonString = jsonObject.toJSONString();
+                ObjectNode editorJsonNode = (ObjectNode) objectMapper.readTree(jsonString);
                 modelNode.put("model", editorJsonNode);
 
             } catch (Exception e) {

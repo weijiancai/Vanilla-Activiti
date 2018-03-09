@@ -4,6 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
@@ -56,7 +59,25 @@ public class ModelSaveRestResource implements ModelDataJsonConstants {
 
             repositoryService.saveModel(model);
 
-            repositoryService.addModelEditorSource(model.getId(), values.getFirst("json_xml").getBytes("utf-8"));
+            String json_xml = values.getFirst("json_xml");
+            JSONObject jsonObject = JSON.parseObject(json_xml);
+            JSONArray childShapes = jsonObject.getJSONArray("childShapes");
+            for(int i= 0; i < childShapes.size(); i++) {
+                JSONObject shap = childShapes.getJSONObject(i);
+                JSONObject stencil = shap.getJSONObject("stencil");
+                JSONObject properties = shap.getJSONObject("properties");
+                if (stencil != null) {
+                    String id = stencil.getString("id");
+                    IStencil stencilObj = Stencilset.getInstance().getIStencil(id);
+                    if (stencilObj != null) {
+                        stencil.put("ectid", stencilObj.getEctid());
+                        stencil.put("id", id.replace("_" + stencilObj.getEctid(), ""));
+                        properties.put("ectid", stencilObj.getEctid());
+                    }
+                }
+            }
+            json_xml = jsonObject.toJSONString();
+            repositoryService.addModelEditorSource(model.getId(), json_xml.getBytes("utf-8"));
 
             InputStream svgStream = new ByteArrayInputStream(values.getFirst("svg_xml").getBytes("utf-8"));
             TranscoderInput input = new TranscoderInput(svgStream);

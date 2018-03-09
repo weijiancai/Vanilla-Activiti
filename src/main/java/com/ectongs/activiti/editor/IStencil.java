@@ -1,8 +1,9 @@
 package com.ectongs.activiti.editor;
 
-import java.util.List;
+import java.util.Set;
 
 /**
+ *
  * @author wei_jc
  * @since 1.0.0
  * 2018/3/6.
@@ -113,17 +114,17 @@ public interface IStencil {
 
     String getIcon();
 
-    List<String> getGroups();
+    Set<String> getGroups();
 
     boolean isMayBeRoot();
 
     boolean isHide();
 
-    List<String> getPropertyPackages();
+    Set<String> getPropertyPackages();
 
-    List<String> getHiddenPropertyPackages();
+    Set<String> getHiddenPropertyPackages();
 
-    List<String> getRoles();
+    Set<String> getRoles();
 
-//    String getEctid();
+    String getEctid();
 }

@@ -22,6 +22,7 @@ public class Stencilset {
     private JSONArray stencils;
     private JSONArray propertyPackages;
     private Map<String, JSONArray> properties = new HashMap<>();
+    private Map<String, IStencil> iStencilMap = new HashMap<>();
 
     public static Stencilset getInstance() {
         return ourInstance;
@@ -80,6 +81,35 @@ public class Stencilset {
 
         return null;
     }
+    public IStencil getIStencil(String id) {
+        return iStencilMap.get(id);
+    }
+
+    public JSONObject getPropertyPackage(String name) {
+        for(int i = 0;  i < propertyPackages.size(); i++) {
+            JSONObject obj = propertyPackages.getJSONObject(i);
+            if (obj.getString("name").equals(name)) {
+                return obj;
+            }
+        }
+
+        return null;
+    }
+
+    public JSONObject getProperty(String packageName, String id) {
+        JSONObject object = getPropertyPackage(packageName);
+        if (object == null) {
+            return null;
+        }
+        JSONArray array = object.getJSONArray("properties");
+        for(int i = 0; i < array.size(); i++) {
+            JSONObject obj = array.getJSONObject(i);
+            if (obj.getString("id").equals(id)) {
+                return obj;
+            }
+        }
+        return null;
+    }
 
     public String toJsonString() {
         return ultimateJson.toJSONString();
@@ -92,14 +122,27 @@ public class Stencilset {
         }
         Object obj = JSONObject.toJSON(stencil);
         stencils.add(obj);
+        iStencilMap.put(stencil.getId(), stencil);
     }
 
     public void addProperty(String name, IProperty property) {
-        JSONObject object = new JSONObject();
-        object.put("name", name);
-        JSONArray array = new JSONArray();
+        JSONObject propPackage = getPropertyPackage(name);
+        JSONArray array;
+        // 已存在的删掉
+        if (propPackage != null) {
+            JSONObject prop = getProperty(name, property.getId());
+            array = propPackage.getJSONArray("properties");
+            if (prop != null) {
+                array.remove(prop);
+            }
+        } else {
+            propPackage = new JSONObject();
+            propPackage.put("name", name);
+            array = new JSONArray();
+            propPackage.put("properties", array);
+            propertyPackages.add(propPackage);
+        }
+        // 新增
         array.add(JSONObject.toJSON(property));
-        object.put("properties", array);
-        propertyPackages.add(object);
     }
 }

@@ -3,6 +3,7 @@ package com.ectongs.activiti.editor;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.ectongs.activiti.editor.model.Property;
 import com.ectongs.activiti.editor.model.Stencil;
 import org.activiti.engine.ActivitiException;
 import org.apache.commons.io.IOUtils;
@@ -58,6 +59,14 @@ public class StencilsetRestResource {
         }
 
         set.addStencil(new Stencil(IStencil.NODE_USERTASK, "bmsp", "部门审批", "由部门审批请假申请", "请假"));
+        set.addProperty("processtaskobj", new Property("verify_id", "审批ID"));
+        set.addProperty("processtaskobj", new Property("is_need_material", "需要用料", IProperty.TYPE_BOOLEAN));
+        set.addProperty("processtaskobj", new Property("is_need_cost", "需要费用", IProperty.TYPE_BOOLEAN));
+        set.addProperty("processtaskobj", new Property("is_need_verify", "需要审批", IProperty.TYPE_BOOLEAN));
+        set.addProperty("processtaskobj", new Property("task_object_id", "任务项"));
+        set.addProperty("processtaskobj", new Property("memo", "备注"));
+        set.addProperty("processtaskobj", new Property("work_hour", "工时"));
+        set.addProperty("processtaskobj", new Property("right_compose_id", "组合权限"));
         return set.toJsonString();
     }
 }

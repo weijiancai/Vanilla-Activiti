@@ -4,12 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.ectongs.activiti.editor.IStencil;
 import com.ectongs.activiti.editor.Stencilset;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * 流程节点
+ *
  * @author wei_jc
  * @since 1.0.0
  * 2018/3/6.
@@ -23,20 +22,20 @@ public class Stencil implements IStencil {
     private String icon;
     private boolean isMayBeRoot;
     private boolean isHide;
-    private List<String> groups = new ArrayList<>();
-    private List<String> propertyPackages = new ArrayList<>();
-    private List<String> hiddenPropertyPackages = new ArrayList<>();
-    private List<String> roles = new ArrayList<>();
+    private Set<String> groups = new HashSet<>();
+    private Set<String> propertyPackages = new HashSet<>();
+    private Set<String> hiddenPropertyPackages = new HashSet<>();
+    private Set<String> roles = new HashSet<>();
 
     private String ectid;
 
     public Stencil(String extend, String id, String title, String description, String group) {
         JSONObject jsonObject = Stencilset.getInstance().getOriginalStencil(extend);
-//        this.id = jsonObject.getString("id");
+        this.id = jsonObject.getString("id") + "_" + id;
         type = jsonObject.getString("type");
         view = jsonObject.getString("view");
         icon = jsonObject.getString("icon");
-        this.id = id;
+        this.ectid = id;
         this.title = title;
         this.description = description;
         addGroup(group);
@@ -117,7 +116,7 @@ public class Stencil implements IStencil {
     }
 
     @Override
-    public List<String> getGroups() {
+    public Set<String> getGroups() {
         return groups;
     }
 
@@ -132,18 +131,23 @@ public class Stencil implements IStencil {
     }
 
     @Override
-    public List<String> getPropertyPackages() {
+    public Set<String> getPropertyPackages() {
         return propertyPackages;
     }
 
     @Override
-    public List<String> getHiddenPropertyPackages() {
+    public Set<String> getHiddenPropertyPackages() {
         return hiddenPropertyPackages;
     }
 
     @Override
-    public List<String> getRoles() {
+    public Set<String> getRoles() {
         return roles;
+    }
+
+    @Override
+    public String getEctid() {
+        return ectid;
     }
 
 
